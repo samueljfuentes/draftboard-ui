@@ -1,0 +1,14 @@
+.landing-page {
+  overflow: hidden;
+  display: table;
+  height: 100vh;
+  width: 100%;
+  background-color: #3f51b5;
+
+  &__content {
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    padding: 0 1rem; 
+  }
+}
