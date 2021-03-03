@@ -76,7 +76,7 @@ const SignIn = ({loadUser, refreshRoute}) => {
         <div className="sign-in-box__account-status">
           Not signed up? <br />
           <Link className="sign-in-box__account-status--signup" to={() => '/signup'} >Create a free account</Link> quickly and easily to save your changes! <br />
-          Or <Link className="sign-in-box__account-status--guest" to={() => '/draftboard'} >continue as a guest</Link> if you prefer.
+          Or <Link className="sign-in-box__account-status--guest" onClick={() => loadUser('guest')} to={() => '/draftboard'} >continue as a guest</Link> if you prefer.
         </div>
       </fieldset>
     </form>

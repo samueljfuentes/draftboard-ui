@@ -43,7 +43,7 @@ class PlayerTable extends React.Component {
   async componentDidMount() {
     console.log('PLAYER TABLE MOUNTED..getting player lists...');
     
-    const allPlayers = await this.getPlayerLists();  
+    const allPlayers = await this.getPlayerLists();
     allPlayers ? this.props.updateAllPlayers(allPlayers) : alert('Server Error: Failed to fetch players. Please try again later.')
   };
 
@@ -185,6 +185,7 @@ class PlayerTable extends React.Component {
 
   drop = (event, playerName) => {
     event.preventDefault();
+    console.log('DROPPED ON:', playerName)
     this.replacePlayer(playerName);
   };
 
@@ -215,7 +216,8 @@ class PlayerTable extends React.Component {
       },
       body: JSON.stringify({...this.props.user})
     }).then(data => data.json()).catch(e => null);
-    const newPlayers = this.compareLists(players.myPlayers[0].playerlist, players.allPlayers);
+    
+    const newPlayers = this.compareLists(players.myPlayers, players.allPlayers);
     
     return {
       myPlayers: players.myPlayers,
@@ -236,8 +238,17 @@ class PlayerTable extends React.Component {
     // send player in post...
     try {
       if (username === "guest") {
-        // add to session storage/state...
-        return
+        const newMyPlayers = Array.from(this.props.myPlayers);
+        const newPlayer = Object.assign({}, player[0]);
+        newPlayer.tier = 10;
+        newPlayer.rank = this.props.myPlayers.length ?
+          // the new players rank should be one more than the lowest ranked player of same position, ie: length + 1 
+          this.props.myPlayers.filter(myPlayer => myPlayer.position === newPlayer.position).length + 1 : 
+          1;
+        
+        newMyPlayers.push(newPlayer);
+        this.props.updateMyPlayersList(newMyPlayers);
+        this.removeFromAllPlayers(player[0], this.props.allPlayers);
       }
       else {
         // update user list...
@@ -255,8 +266,7 @@ class PlayerTable extends React.Component {
         });
         let players = await response.json();
         this.props.updateMyPlayersList(players);
-        console.log(allPlayers)
-        this.removeFromAllPlayers(player[0], allPlayers);
+        this.removeFromAllPlayers(player[0], this.props.allPlayers);
       }
     }
     catch (error) {
@@ -270,6 +280,10 @@ class PlayerTable extends React.Component {
   };
 
   compareLists = (myPlayers, allPlayers) => {
+    // check for previous myPlayers...
+    if (!myPlayers.length) {
+      return allPlayers
+    }
     const ids = myPlayers.map(player => player.playerId)
     const newAllPlayers = allPlayers.filter(player => !ids.includes(player.playerId));
     return newAllPlayers
@@ -285,12 +299,90 @@ class PlayerTable extends React.Component {
     this.setState({ draggedPlayer: newDraggedPlayer[0] });
   };
 
-  replacePlayer = (name = "") => {
-    console.log('replacing player...')
+  checkModifiedPlayers = (dragPlayer, droppedOn) => {
+    const { position, isAsc, myPlayers } = this.props;
+    const sortedPlayers = this.sortPlayers(position, isAsc)(myPlayers);
+    let playerRange; // array of players who's ranking are affected
+    let newPlayerRanks; // array with updated rankings for players who are modified
+    // if dragging UP onto tier row
+    if (typeof droppedOn === 'number' && droppedOn <= dragPlayer.tier) {
+      playerRange = sortedPlayers.filter(player => player.tier >= droppedOn && player.rank <= dragPlayer.rank);
+      newPlayerRanks = playerRange.map(player => {
+        return player.rank === dragPlayer.rank ?
+          {
+            ...player,
+            tier: droppedOn,
+            rank: playerRange[0].rank
+          }
+          :
+          {
+            ...player,
+            rank: player.rank + 1
+          }
+      })
+      console.log(newPlayerRanks);
+    };
+    // if dragging DOWN onto tier row
+    if (typeof droppedOn === 'number' && droppedOn > dragPlayer.tier) {
+      playerRange = sortedPlayers.filter(player => player.tier < droppedOn && player.rank >= dragPlayer.rank);
+      newPlayerRanks = playerRange.map(player => {
+        return player.rank === dragPlayer.rank ?
+          {
+            ...player,
+            tier: droppedOn,
+            rank: playerRange[playerRange.length - 1].rank
+          }
+          :
+          {
+            ...player,
+            rank: player.rank - 1
+          }
+      })
+    };
+    // check to see if dragging player DOWN
+    if (dragPlayer.rank < droppedOn.rank) {
+      // grab an array of the players to be modified...
+      playerRange = sortedPlayers.slice(dragPlayer.rank - 1, droppedOn.rank);
+      newPlayerRanks = playerRange.map((player) => {
+        return player.rank === dragPlayer.rank
+          ? {
+              ...player,
+              tier: droppedOn.tier,
+              rank: droppedOn.rank,
+            }
+          : {
+              ...player,
+              rank: player.rank - 1,
+            };
+      });
+    };
+    // check to see if dragging player UP
+    if (dragPlayer.rank > droppedOn.rank) {
+      // grab an array of the players to be modified...
+      playerRange = sortedPlayers.slice(droppedOn.rank - 1, dragPlayer.rank);
+      newPlayerRanks = playerRange.map((player) => {
+        return player.rank === dragPlayer.rank
+          ? {
+              ...player,
+              tier: droppedOn.tier,
+              rank: droppedOn.rank,
+            }
+          : {
+              ...player,
+              rank: player.rank + 1,
+            };
+      });
+    };
+    return newPlayerRanks
+  };
 
-    if (!name || name.includes('TIER:')) {
-      // this.setState({ replacedPlayer: {} });
-      return;
+  replacePlayer = (name = "") => {
+    let modifiedPlayers;
+
+    if (!name || name.includes('TIER')) {
+      const tier = parseInt(name.slice('6'));
+      modifiedPlayers = this.checkModifiedPlayers(this.state.draggedPlayer, tier); 
+      this.refreshPlayerOrder(modifiedPlayers);
     }
     // if drop player name is different than name of current drag player, update replace player...
     else if (name !== this.state.draggedPlayer.displayName) {
@@ -299,9 +391,9 @@ class PlayerTable extends React.Component {
       const newReplacedPlayer = sortedPlayers.filter(
         (player) => name.includes(player.displayName)
       );
-      console.log(newReplacedPlayer);
-      console.log(this.state.draggedPlayer);
-      this.refreshPlayerOrder(this.state.draggedPlayer, newReplacedPlayer[0]);
+      modifiedPlayers = this.checkModifiedPlayers(this.state.draggedPlayer, newReplacedPlayer[0]);
+      // this.refreshPlayerOrder(this.state.draggedPlayer, newReplacedPlayer[0]);
+      this.refreshPlayerOrder(modifiedPlayers);
     }
     // default: do nothing
     else {
@@ -309,49 +401,14 @@ class PlayerTable extends React.Component {
     }
   };
 
-  refreshPlayerOrder = (dragPlayer, rplcPlayer) => {
-    const { position, isAsc, myPlayers } = this.props;
-    const sortedPlayers = this.sortPlayers(position, isAsc)(myPlayers);
-    let myPlayerList = [...myPlayers]; // create new all players array to modify and send to state
-    let playerRange; // array of players who's ranking are affected
-    let newPlayerRanks; // array with updated rankings for players who are modified
-
-    // check to see if dragging player DOWN
-    if (dragPlayer.rank < rplcPlayer.rank) {
-      // grab an array of the players to be modified...
-      playerRange = sortedPlayers.slice(dragPlayer.rank - 1, rplcPlayer.rank);
-      newPlayerRanks = playerRange.map((player) => {
-        return player.rank === dragPlayer.rank
-          ? {
-              ...player,
-              tier: rplcPlayer.tier,
-              rank: rplcPlayer.rank,
-            }
-          : {
-              ...player,
-              rank: player.rank - 1,
-            };
-      });
+  refreshPlayerOrder = (modifiedPlayers) => {
+    console.log('refreshing player order...')
+    let myPlayerList = [...this.props.myPlayers];
+    if (modifiedPlayers === null || modifiedPlayers === undefined) {
+      return
     }
-    // check to see if dragging player UP
-    if (dragPlayer.rank > rplcPlayer.rank) {
-      // grab an array of the players to be modified...
-      playerRange = sortedPlayers.slice(rplcPlayer.rank - 1, dragPlayer.rank);
-      newPlayerRanks = playerRange.map((player) => {
-        return player.rank === dragPlayer.rank
-          ? {
-              ...player,
-              tier: rplcPlayer.tier,
-              rank: rplcPlayer.rank,
-            }
-          : {
-              ...player,
-              rank: player.rank + 1,
-            };
-      });
-    }
-    // loop through each modified player, determine their index in the main array, and replace each player with modified version
-    newPlayerRanks.forEach((newPlayer) => {
+    // // loop through each modified player, determine their index in the main array, and replace each player with modified version
+    modifiedPlayers.forEach((newPlayer) => {
       // in the main player array, find the index of each player to replace by matching id's..
       let index = myPlayerList.findIndex(
         (player) => player.playerId === newPlayer.playerId

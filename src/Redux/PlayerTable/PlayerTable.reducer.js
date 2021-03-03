@@ -37,7 +37,7 @@ const playerTableReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         allPlayers: action.payload.allPlayers,
-        myPlayers: action.payload.myPlayers[0].playerlist
+        myPlayers: action.payload.myPlayers
       }
     case 'UPDATE_ALL_PLAYERS_LIST':
       return {

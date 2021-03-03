@@ -39,6 +39,9 @@ class App extends React.Component {
   }
 
   loadUser = (newUser) => {
+    if (newUser === 'guest') {
+      window.sessionStorage.setItem('token', newUser);
+    }
     this.props.setUser(newUser);
   };
 
@@ -59,7 +62,7 @@ class App extends React.Component {
           <Route exact path='/signin' render={() => <LandingPage route='signin' loadUser={this.loadUser} refreshRoute={this.refreshRoute}/>} />
           <Route exact path='/signup' render={() => <LandingPage route='signup' loadUser={this.loadUser} refreshRoute={this.refreshRoute} />} />
           <Route exact path='/draftboard' render={() => {
-            if (user && user.userid) {
+            if ((user && user.userid) || (token === 'guest')) {
               return <PlayerTable />
             }
             // get profile is there is a sesssion

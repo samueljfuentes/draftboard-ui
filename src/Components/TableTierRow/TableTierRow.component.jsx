@@ -2,10 +2,14 @@ import React from 'react';
 
 import './TableTierRow.styles.scss';
 
-const TierRow = ({ tier }) => {
+const TierRow = ({ tier, allowDrop, drop }) => {
   return (
-    <tr className="tier__row">
-      <th className="tier__cell" colSpan="3">TIER: {tier}</th>
+    <tr className="tier__row" 
+      draggable
+      onDragOver={(event) => allowDrop(event)}
+      onDrop={(event) => drop(event, `TIER: ${tier}`)}
+    >
+      <th className="tier__cell" colSpan="3"> TIER: {tier} </th>
     </tr>
   )
 };

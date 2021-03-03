@@ -15,7 +15,7 @@ const MyPlayers = ({ tiers, myPlayers, dragStart, allowDrop, drop, touchDrag, to
   return (
     tiers.map(tier => (
       <tbody className="table__body" key={tier}>
-        <TierRow tier={tier}/>
+        <TierRow tier={tier} allowDrop={allowDrop} drop={drop}/>
         {myPlayers.map(player => 
           player.tier === tier ?
           (
