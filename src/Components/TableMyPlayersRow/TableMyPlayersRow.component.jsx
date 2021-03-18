@@ -1,7 +1,7 @@
 import React from 'react';
 
 const MyPlayersRow = ({ 
-  id, displayName, position, jersey, tier, rank, dragStart, allowDrop, drop, touchDrag, touchDrop 
+  id, displayName, jersey, tier, rank, removePlayer, dragStart, allowDrop, drop, touchDrag, touchDrop 
 }) => {
   return (
     <tr 
@@ -14,6 +14,7 @@ const MyPlayersRow = ({
       onTouchEnd={(click) => touchDrop(click)}
     >
       <th className="table__body--cell1">{displayName} (#{jersey})</th>
+      <td className="table__body--cell"><div onClick={(click) => removePlayer(click)}> - </div></td>
       <td className="table__body--cell">{tier}</td>
       <td className="table__body--cell">{rank}</td>
     </tr>

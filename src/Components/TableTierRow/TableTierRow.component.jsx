@@ -9,7 +9,7 @@ const TierRow = ({ tier, allowDrop, drop }) => {
       onDragOver={(event) => allowDrop(event)}
       onDrop={(event) => drop(event, `TIER: ${tier}`)}
     >
-      <th className="tier__cell" colSpan="3"> TIER: {tier} </th>
+      <th className="tier__cell" colSpan="4"> TIER: {tier} </th>
     </tr>
   )
 };

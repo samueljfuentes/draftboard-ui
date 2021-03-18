@@ -22,7 +22,7 @@ const SignUp = ({ loadUser, refreshRoute }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-    let user;
+    let session;
     // check passwords match...
     if (password !== passwordConfirm) {
       alert("Your passwords do not match. Please re-enter your credentials.")
@@ -41,39 +41,21 @@ const SignUp = ({ loadUser, refreshRoute }) => {
         })
       });
 
-      user = await response.json(); 
+      session = await response.json(); 
     } 
     catch (error) {
       alert('Error Signing Up, please try again.');
     }
 
-    console.log(user)
-    if (user && user.username) {
-      loadUser(user);
+    if (session.success) {
+      window.sessionStorage.setItem('token', session.token)
+      loadUser(session.user);
       resetFields();
       refreshRoute('/draftboard');
     }
     else {
       alert('Sign up failed. Please try again.');
     }
-
-    // fetch('http://localhost:3000/signup', {
-    //   method: 'post',
-    //   headers: {'Content-Type': 'application/json'},
-    //   body: JSON.stringify({
-    //     username,
-    //     password,
-    //     passwordConfirm
-    //   })
-    // }).then(resp => resp.json())
-    //   .then(user => {
-    //     // if (user.id) {
-    //       console.log(user);
-    //       loadUser(user);
-    //       refreshRoute('/draftboard');
-    //     // };
-    //   })
-    //   .catch(err => console.log(err));
   };
 
   return (

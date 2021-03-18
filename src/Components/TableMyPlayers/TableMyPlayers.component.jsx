@@ -11,7 +11,7 @@ const mapState = (state) => {
   }
 }
 
-const MyPlayers = ({ tiers, myPlayers, dragStart, allowDrop, drop, touchDrag, touchDrop }) => {
+const MyPlayers = ({ tiers, myPlayers, removePlayer, dragStart, allowDrop, drop, touchDrag, touchDrop }) => {
   return (
     tiers.map(tier => (
       <tbody className="table__body" key={tier}>
@@ -23,10 +23,10 @@ const MyPlayers = ({ tiers, myPlayers, dragStart, allowDrop, drop, touchDrag, to
               key={myPlayers.indexOf(player)}
               id={player.playerId}
               displayName={player.displayName}
-              position={player.position}
               jersey={player.jersey}
               tier={player.tier}
               rank={player.rank}
+              removePlayer={removePlayer}
               dragStart={dragStart}
               allowDrop={allowDrop}
               drop={drop}

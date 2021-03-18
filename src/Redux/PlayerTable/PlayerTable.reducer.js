@@ -3,6 +3,7 @@
 const INITIAL_STATE = {
   allPlayers: [],
   myPlayers: [],
+  isProfileOpen: false,
   isMyPlayers: false,
   isAsc: true,
   orderBy: "tier",
@@ -15,6 +16,7 @@ const INITIAL_STATE = {
     {id: "TE"}
   ],
   headerCells: [
+    {id: "del", label: "Delete"},
     { id: "tier", label: "Tier" },
     { id: "rank", label: "Rank" },
   ],
@@ -53,6 +55,11 @@ const playerTableReducer = (state = INITIAL_STATE, action) => {
       return {
         ...state,
         isMyPlayers: action.payload
+      }
+    case 'TOGGLE_PROFILE':
+      return {
+        ...state,
+        isProfileOpen: action.payload
       }
     default:
       return state;

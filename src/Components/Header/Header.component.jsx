@@ -1,19 +1,27 @@
 import React from "react";
 import { connect } from 'react-redux';
 
-import { toggleMyPlayers } from '../../Redux/PlayerTable/PlayerTable.actions';
+import { toggleMyPlayers, toggleProfile } from '../../Redux/PlayerTable/PlayerTable.actions';
 
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import './Header.styles.scss';
 
 
+const mapState = (state) => {
+  return {
+    isMyPlayers: state.playerTable.isMyPlayers,
+    isProfileOpen: state.playerTable.isProfileOpen
+  }
+};
+
 const mapDispatch = (dispatch) => {
   return {
-    toggleMyPlayers: (isMyPlayers) => dispatch(toggleMyPlayers(isMyPlayers))
+    toggleMyPlayers: (isMyPlayers) => dispatch(toggleMyPlayers(isMyPlayers)),
+    toggleProfile: (isProfileOpen) => dispatch(toggleProfile(isProfileOpen))
   }
-}
+};
 
-const Header = ({ isMyPlayers, toggleMyPlayers }) => {
+const Header = ({ isMyPlayers, isProfileOpen, toggleMyPlayers, toggleProfile }) => {
   return (
     <div className="header__container">
       <header className="header__inner">
@@ -23,7 +31,8 @@ const Header = ({ isMyPlayers, toggleMyPlayers }) => {
               <FontAwesomeIcon 
                 className="header__icons--profile" 
                 icon="user-circle"
-                aria-hidden="true"       
+                aria-hidden="true"
+                onClick={() => toggleProfile(isProfileOpen)}       
               />
             </div>
             <div className="header__icons--settings-container">
@@ -58,4 +67,4 @@ const Header = ({ isMyPlayers, toggleMyPlayers }) => {
   );
 };
 
-export default connect(null, mapDispatch)(Header);
+export default connect(mapState, mapDispatch)(Header);

@@ -3,11 +3,14 @@ import { connect } from 'react-redux';
 
 import { updateAllPlayers, updateMyPlayersList, updateAllPlayersList } from "../../Redux/PlayerTable/PlayerTable.actions";
 
+import Modal from '../Modal/Modal.component';
+
 import Header from '../../Components/Header/Header.component';
 import PositionNav from '../../Components/TablePositionNav/TablePositionNav.component';
 import HeaderCells from '../../Components/TableHeaderCells/TableHeaderCells.component';
 import AllPlayers from '../../Components/TableAllPlayers/TableAllPlayers.component';
 import MyPlayers from '../../Components/TableMyPlayers/TableMyPlayers.component';
+import ProfileOverlay from '../../Components/ProfileOverlay/ProfileOverlay.component';
 
 import './PlayerTable.styles.scss';
 
@@ -17,6 +20,7 @@ const mapState = (state) => {
     user: state.user.user,
     allPlayers: state.playerTable.allPlayers,
     myPlayers: state.playerTable.myPlayers,
+    isProfileOpen: state.playerTable.isProfileOpen,
     isMyPlayers: state.playerTable.isMyPlayers,
     position: state.playerTable.position,
     isAsc: state.playerTable.isAsc,
@@ -67,6 +71,10 @@ class PlayerTable extends React.Component {
     // update when toggling different views...
     else if (nextProps.isMyPlayers !== this.props.isMyPlayers) {
       console.log('toggling my players view, UPDATE TABLE')
+      return true
+    }
+    else if (nextProps.isProfileOpen !== this.props.isProfileOpen) {
+      console.log('toggling profile, UPDATE TABLE')
       return true
     }
     // NEVER UPDATE WHEN STATE CHANGES, this is placeholder for drag/repl players... 
@@ -185,7 +193,6 @@ class PlayerTable extends React.Component {
 
   drop = (event, playerName) => {
     event.preventDefault();
-    console.log('DROPPED ON:', playerName)
     this.replacePlayer(playerName);
   };
 
@@ -230,12 +237,11 @@ class PlayerTable extends React.Component {
     const nodeValue = clickEvent.currentTarget.parentNode.previousSibling.textContent;
     const playerJersey = nodeValue.slice(nodeValue.indexOf('(') + 2, nodeValue.length - 1);
     const playerName = nodeValue.slice(0, nodeValue.indexOf('(') - 1);
-    const allPlayers = this.sortByPosition(this.props.position)(this.props.allPlayers); // dont sort by position
+    const allPlayers = this.props.allPlayers;
     // determine player object...
     const player = allPlayers.filter(player => player.displayName === playerName && player.jersey === parseInt(playerJersey));
-    let username;
-    this.props.user.userid ? username = this.props.user.username : username = "guest";
-    // send player in post...
+    const username = this.props.user.userid ? this.props.user.username : "guest";
+   
     try {
       if (username === "guest") {
         const newMyPlayers = Array.from(this.props.myPlayers);
@@ -272,6 +278,48 @@ class PlayerTable extends React.Component {
     catch (error) {
       console.log(error);
     }
+  };
+
+  removePlayer = async (clickEvent) => {
+    const username = this.props.user.userid ? this.props.user.username : 'guest';
+    const nodeValue = clickEvent.currentTarget.parentNode.previousSibling.textContent;
+    const playerJersey = nodeValue.slice(nodeValue.indexOf('(') + 2, nodeValue.length - 1);
+    const playerName = nodeValue.slice(0, nodeValue.indexOf('(') - 1);
+    const myPlayers = this.props.myPlayers;
+    // determine player object...
+    const player = myPlayers.filter(player => player.displayName === playerName && player.jersey === parseInt(playerJersey))[0];
+  
+    try {
+      if (username === 'guest') {    
+        const newMyPlayers = myPlayers.filter(myPlayer => myPlayer.playerId !== player.playerId);
+        this.props.updateMyPlayersList(newMyPlayers);
+        this.addToAllPlayers(player, this.props.allPlayers);
+      }
+      else {
+        let response = await fetch('http://localhost:3000/removeplayer', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'authorization': window.sessionStorage.getItem('token')
+          },
+          body: JSON.stringify({
+            username,
+            player
+          })
+        });
+        let newMyPlayers = await response.json();
+        this.props.updateMyPlayersList(newMyPlayers);
+        this.addToAllPlayers(player, this.props.allPlayers);
+      }
+    }
+    catch (error) {
+      console.log(error);
+    }   
+  };
+
+  addToAllPlayers = (player, allPlayers) => {
+    const newAllPlayers = [player, ...allPlayers];
+    this.props.updateAllPlayersList(newAllPlayers);
   };
 
   removeFromAllPlayers = (player, allPlayers) => {
@@ -320,7 +368,6 @@ class PlayerTable extends React.Component {
             rank: player.rank + 1
           }
       })
-      console.log(newPlayerRanks);
     };
     // if dragging DOWN onto tier row
     if (typeof droppedOn === 'number' && droppedOn > dragPlayer.tier) {
@@ -392,7 +439,6 @@ class PlayerTable extends React.Component {
         (player) => name.includes(player.displayName)
       );
       modifiedPlayers = this.checkModifiedPlayers(this.state.draggedPlayer, newReplacedPlayer[0]);
-      // this.refreshPlayerOrder(this.state.draggedPlayer, newReplacedPlayer[0]);
       this.refreshPlayerOrder(modifiedPlayers);
     }
     // default: do nothing
@@ -401,7 +447,7 @@ class PlayerTable extends React.Component {
     }
   };
 
-  refreshPlayerOrder = (modifiedPlayers) => {
+  refreshPlayerOrder = async (modifiedPlayers) => {
     console.log('refreshing player order...')
     let myPlayerList = [...this.props.myPlayers];
     if (modifiedPlayers === null || modifiedPlayers === undefined) {
@@ -416,18 +462,59 @@ class PlayerTable extends React.Component {
       // in the main player array, replace each (1) player at the given index with the modified player
       myPlayerList.splice(index, 1, newPlayer);
     });
+
+    // SEND MY PLAYERS TO B/E, UPDATE D/B... ////////////////////////////////////////////////////////////
+    try {
+      const token = window.sessionStorage.getItem('token'); 
+      const username = this.props.user.userid ? this.props.user.username : 'guest';
+      if (username !== 'guest') {
+        await fetch('http://localhost:3000/updatemyplayers', {
+          method: 'POST',
+          headers: {
+            'content-type': 'application/json',
+            'authorization': token
+          },
+          body: JSON.stringify({
+            username,
+            myPlayerList
+          })
+        })
+        .then(response => {
+          if (response.ok === false) {
+            alert('something went wrong...')
+            console.log(response);
+          }
+          else {
+            return
+          }
+        })
+        .catch(error => console.log(error));
+      }
+    }
+    catch (err) {
+      alert('failed to upload database!!');
+      console.log(err);
+    }
+
     // send action...
     this.props.updateMyPlayersList(myPlayerList);
   };
 
   // PLAYER TABLE COMPONENT...
   render() {
-    const { isMyPlayers, allPlayers, myPlayers, position, isAsc } = this.props;
+    const { isProfileOpen, isMyPlayers, allPlayers, myPlayers, position, isAsc } = this.props;
     const mySortedPlayers = this.sortPlayers(position, isAsc)(myPlayers);
     const allSortedPlayers = this.sortByPosition(position)(allPlayers);
     return (
       <>
-        <Header isMyPlayers={isMyPlayers} />
+        {
+          isProfileOpen ?
+          <Modal>
+            <ProfileOverlay isProfileOpen={isProfileOpen} />
+          </Modal> :
+          null
+        }
+        <Header />
         <div className="table__container" id="draft-board">
           <PositionNav />
           <table className="table">
@@ -442,6 +529,7 @@ class PlayerTable extends React.Component {
               (
                 <MyPlayers 
                   myPlayers={mySortedPlayers}
+                  removePlayer={this.removePlayer}
                   dragStart={this.dragStart}
                   allowDrop={this.allowDrop}
                   drop={this.drop}

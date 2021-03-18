@@ -5,9 +5,6 @@ import React from 'react';
 import SignIn from '../../Components/SignIn/SignIn.component';
 import SignUp from '../../Components/SignUp/SignUp.component';
 
-// IMPORT REDUX
-import { setUser } from '../../Redux/User/User.actions'
-
 // IMPORT STYLES
 import './LandingPage.styles.scss';
 

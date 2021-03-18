@@ -47,3 +47,10 @@ export const toggleMyPlayers = (isMyPlayers) => {
     payload: !isMyPlayers
   }
 };
+
+export const toggleProfile = (isProfile) => {
+  return {
+    type: "TOGGLE_PROFILE",
+    payload: !isProfile
+  }
+}
