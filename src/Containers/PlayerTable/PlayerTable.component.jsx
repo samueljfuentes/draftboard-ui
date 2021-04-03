@@ -7,7 +7,7 @@ import Modal from '../Modal/Modal.component';
 
 import Header from '../../Components/Header/Header.component';
 import PositionNav from '../../Components/TablePositionNav/TablePositionNav.component';
-import HeaderCells from '../../Components/TableHeaderCells/TableHeaderCells.component';
+import TableHeader from '../../Components/TableHeader/TableHeader.component';
 import AllPlayers from '../../Components/TableAllPlayers/TableAllPlayers.component';
 import MyPlayers from '../../Components/TableMyPlayers/TableMyPlayers.component';
 import ProfileOverlay from '../../Components/ProfileOverlay/ProfileOverlay.component';
@@ -514,14 +514,13 @@ class PlayerTable extends React.Component {
           </Modal> :
           null
         }
-        <Header />
-        <div className="table__container" id="draft-board">
-          <PositionNav />
+        <div className="draftboard" id="draft-board">
+          <Header />
           <table className="table">
             <thead className="table__header">
               <tr className="table__header--row">
                 <th className="table__header--title" scope="column">Player Name</th>
-                <HeaderCells isMyPlayers={isMyPlayers} />
+                <TableHeader isMyPlayers={isMyPlayers} />
               </tr>
             </thead>
             {
@@ -545,6 +544,7 @@ class PlayerTable extends React.Component {
               )
             }
           </table>
+          <PositionNav />
         </div>
       </>
     );

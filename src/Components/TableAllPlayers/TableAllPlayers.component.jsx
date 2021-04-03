@@ -2,6 +2,8 @@ import React from 'react';
 
 import AllPlayersRow from '../TableAllPlayersRow/TableAllPlayersRow.component';
 
+import './TableAllPlayers.styles.scss'
+
 const AllPlayers = ({ allPlayers, addPlayer }) => {
   return (
     <tbody className="table__body">

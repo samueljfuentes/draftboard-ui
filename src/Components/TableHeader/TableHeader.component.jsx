@@ -3,7 +3,7 @@ import { connect } from 'react-redux';
 
 import { updateSortOrder } from '../../Redux/PlayerTable/PlayerTable.actions';
 
-import './TableHeaderCells.styles.scss';
+import './TableHeader.styles.scss';
 
 const mapState = (state) => {
   return {
@@ -18,7 +18,7 @@ const mapDispatch = (dispatch) => {
   }
 }
 
-const PlayerTableHeaderCells = ({ headerCells, isAsc, handleSortRequest, isMyPlayers }) => {
+const TableHeader = ({ headerCells, isAsc, handleSortRequest, isMyPlayers }) => {
   return isMyPlayers ?
     headerCells.map((cell, i) => (
       <th 
@@ -38,4 +38,4 @@ const PlayerTableHeaderCells = ({ headerCells, isAsc, handleSortRequest, isMyPla
     </th>
 };
 
-export default connect(mapState, mapDispatch)(PlayerTableHeaderCells);
+export default connect(mapState, mapDispatch)(TableHeader);
