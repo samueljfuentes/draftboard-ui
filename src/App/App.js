@@ -8,8 +8,7 @@ import { setUser } from '../Redux/User/User.actions'
 
 // IMPORT CONTAINERS & COMPONENTS
 import LandingPage from '../Containers/LandingPage/LandingPage.container';
-import PlayerTable from '../Containers/PlayerTable/PlayerTable.component';
-// import TestTable from '../Components/playerTable/testTable.component';
+import Draftboard from '../Containers/Draftboard/Draftboard.component';
 
 // IMPORT STYLES
 import { library } from '@fortawesome/fontawesome-svg-core';
@@ -63,7 +62,7 @@ class App extends React.Component {
           <Route exact path='/signup' render={() => <LandingPage route='signup' loadUser={this.loadUser} refreshRoute={this.refreshRoute} />} />
           <Route exact path='/draftboard' render={() => {
             if ((user && user.userid) || (token === 'guest')) {
-              return <PlayerTable />
+              return <Draftboard />
             }
             // get profile is there is a sesssion
             if (token) {
@@ -88,7 +87,7 @@ class App extends React.Component {
                   .then(user => {
                     if (user && user.username) {
                       this.loadUser(user);
-                      return <PlayerTable />
+                      return <Draftboard />
                     }
                   })
                   .catch(err => console.log(err))

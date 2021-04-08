@@ -1,10 +1,22 @@
 import React from 'react';
+import { connect } from 'react-redux';
 
 import AllPlayersRow from '../TableAllPlayersRow/TableAllPlayersRow.component';
 
-import './TableAllPlayers.styles.scss'
+import { sortByPosition } from '../../Redux/PlayerTable/PlayerTable.utils'
 
-const AllPlayers = ({ allPlayers, addPlayer }) => {
+import './TableAllPlayers.styles.scss';
+
+
+const mapState = (state) => {
+  return {
+    allPlayers: state.playerTable.allPlayers,
+    position: state.playerTable.position,
+  }
+};
+
+const AllPlayers = ({ allPlayers, position }) => {
+  const allSortedPlayers = sortByPosition(position, allPlayers);
   return (
     <tbody className="table__body">
       {
@@ -14,12 +26,12 @@ const AllPlayers = ({ allPlayers, addPlayer }) => {
             id={player.playerId}
             displayName={player.displayName}
             jersey={player.jersey}
-            addPlayer={addPlayer}
-        />
+            allPlayers={allSortedPlayers}
+          />
         ))
       }
     </tbody>
   )
 };
 
-export default AllPlayers;
+export default connect(mapState)(AllPlayers);

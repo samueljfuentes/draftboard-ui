@@ -1,8 +1,8 @@
-// import players from '../../Data/PlayerData';
-
+// *** STATE ***
 const INITIAL_STATE = {
   allPlayers: [],
   myPlayers: [],
+  draggedPlayer: {},
   isProfileOpen: false,
   isMyPlayers: false,
   isAsc: true,
@@ -19,9 +19,10 @@ const INITIAL_STATE = {
     {id: "del", label: "Delete"},
     { id: "tier", label: "Tier" },
     { id: "rank", label: "Rank" },
-  ],
+  ]
 };
 
+// *** REDUCER ***
 const playerTableReducer = (state = INITIAL_STATE, action) => {
   switch (action.type) {
     case 'UPDATE_POSITION':

@@ -19,23 +19,32 @@ const mapDispatch = (dispatch) => {
 }
 
 const TableHeader = ({ headerCells, isAsc, handleSortRequest, isMyPlayers }) => {
-  return isMyPlayers ?
-    headerCells.map((cell, i) => (
-      <th 
-        className="table__header--cell" 
-        scope="column"
-        onClick={() => handleSortRequest(cell.id, isAsc)} 
-        key={i}
-      >
-        {cell.label}
-      </th>
-    )) : 
-    <th 
-      className="table__header--cell"
-      scope="column" 
-    >
-      Add to My Players
-    </th>
+  return (
+    <thead className="table__header">
+      <tr className="table__header--row">
+        <th className="table__header--title" scope="column">Player Name</th>
+        {
+          isMyPlayers ?
+          headerCells.map((cell, i) => (
+            <th 
+              className="table__header--cell" 
+              scope="column"
+              onClick={() => handleSortRequest(cell.id, isAsc)} 
+              key={i}
+            >
+              {cell.label}
+            </th>
+          )) : 
+          <th 
+            className="table__header--cell"
+            scope="column" 
+          >
+            Add to My Players
+          </th>
+        }
+      </tr>
+    </thead>
+  )
 };
 
 export default connect(mapState, mapDispatch)(TableHeader);
