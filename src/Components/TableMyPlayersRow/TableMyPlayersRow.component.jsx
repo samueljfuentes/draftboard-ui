@@ -1,8 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
+import { connect } from 'react-redux';
+
+import {  } from '../../Redux/PlayerTable/PlayerTable.utils';
 
 const MyPlayersRow = ({ 
   id, displayName, jersey, tier, rank, removePlayer, dragStart, allowDrop, drop, touchDrag, touchDrop 
 }) => {
+
+  // dragged player state...
+  const [draggedPlayer, setDraggedPlayer] = useState({}); // ****** Can't use hooks, have to send state to redux...
+
   return (
     <tr 
       className="table__body--row"
