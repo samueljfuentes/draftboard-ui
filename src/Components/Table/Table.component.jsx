@@ -17,7 +17,7 @@ const mapState = (state) => {
   }
 };
 
-const Table = ({ isMyPlayers }) => {
+const Table = ({ allPlayers, position, isMyPlayers }) => {
   return (
     <table className="table">
       <TableHeader isMyPlayers={isMyPlayers}/>
@@ -25,7 +25,7 @@ const Table = ({ isMyPlayers }) => {
         isMyPlayers ?
         <MyPlayers />
         :
-        <AllPlayers />
+        <AllPlayers allPlayers={allPlayers} position={position}/>
       }
     </table>
   )

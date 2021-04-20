@@ -15,8 +15,9 @@ const mapState = (state) => {
   }
 }
 
-const MyPlayers = ({ myPlayers, position, tiers, removePlayer, dragStart, allowDrop, drop, touchDrag, touchDrop }) => {
-  const sortedMyPlayers = sortByPosition(position, myPlayers);
+const MyPlayers = ({ myPlayers, position, tiers }) => {
+  const sortedMyPlayers = sortByPosition(position)(myPlayers);
+  console.log(sortedMyPlayers);
   return (
     <tbody className="table__body">
     {
@@ -24,7 +25,7 @@ const MyPlayers = ({ myPlayers, position, tiers, removePlayer, dragStart, allowD
       tiers.map(tier => {
         return (
           <React.Fragment>
-            <TierRow tier="tier" />
+            <TierRow tier="tier" sortedMyPlayers={sortedMyPlayers} />
             {
               // underneath each tier, render the players that match that tier
               sortedMyPlayers.map(myPlayer => {
@@ -36,6 +37,7 @@ const MyPlayers = ({ myPlayers, position, tiers, removePlayer, dragStart, allowD
                     jersey={myPlayer.jersey}
                     tier={myPlayer.tier}
                     rank={myPlayer.rank}
+                    sortedMyPlayers={sortedMyPlayers}
                   />
                   :
                   null

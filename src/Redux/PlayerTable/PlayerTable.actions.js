@@ -41,6 +41,13 @@ export const updateMyPlayersList = (myPlayers) => {
   }
 }
 
+export const updateDraggedPlayer = (draggedPlayer) => {
+  return {
+    type: "UPDATE_DRAGGED_PLAYER",
+    payload: draggedPlayer
+  }
+}
+
 export const toggleMyPlayers = (isMyPlayers) => {
   return {
     type: "TOGGLE_MY_PLAYERS",

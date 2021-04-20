@@ -52,6 +52,11 @@ const playerTableReducer = (state = INITIAL_STATE, action) => {
         ...state,
         myPlayers: action.payload
       }
+    case 'UPDATE_DRAGGED_PLAYER':
+        return {
+          ...state,
+          draggedPlayer: action.payload
+        }
     case 'TOGGLE_MY_PLAYERS':
       return {
         ...state,

@@ -156,7 +156,7 @@ export const removePlayer = async (clickEvent, allPlayers, myPlayers, user, upda
     if (username === 'guest') {    
       const newMyPlayers = myPlayers.filter(myPlayer => myPlayer.playerId !== player.playerId);
       updateMyPlayersList(newMyPlayers);
-      // add back to all players list *** MAYBE JUST PULL ALL PLAYERS AGAIN AND FILTER
+      // add back to all players list
       const newAllPlayers = [player, ...allPlayers];
       updateAllPlayersList(newAllPlayers);
     }
@@ -174,7 +174,7 @@ export const removePlayer = async (clickEvent, allPlayers, myPlayers, user, upda
       });
       let newMyPlayers = await response.json();
       updateMyPlayersList(newMyPlayers);
-      // add back to all players list *** MAYBE JUST PULL ALL PLAYERS AGAIN AND FILTER
+      // add back to all players list
       const newAllPlayers = [player, ...allPlayers];
       updateAllPlayersList(newAllPlayers);
     }
@@ -266,9 +266,7 @@ export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updat
   updateMyPlayersList(myPlayerList);
 };
 
-export const checkModifiedPlayers = (dragPlayer, droppedOn) => {
-  const { position, isAsc, myPlayers } = this.props; /// ***********************************
-  const sortedPlayers = sortPlayers(position, isAsc)(myPlayers);
+export const checkModifiedPlayers = (dragPlayer, droppedOn, sortedPlayers) => {
   let playerRange; // array of players who's ranking are affected
   let newPlayerRanks; // array with updated rankings for players who are modified
   // if dragging UP onto tier row
@@ -342,22 +340,22 @@ export const checkModifiedPlayers = (dragPlayer, droppedOn) => {
   return newPlayerRanks
 };
 
-export const replacePlayer = (name = "", draggedPlayer, myPlayers, user, updateMyPlayerList) => {
+export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayerList) => {
   let modifiedPlayers;
 
   if (!name || name.includes('TIER')) {
     const tier = parseInt(name.slice('6'));
-    modifiedPlayers = checkModifiedPlayers(draggedPlayer, tier); 
-    refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList); 
+    modifiedPlayers = checkModifiedPlayers(draggedPlayer, tier, sortedMyPlayers);
+    // *** DOUBLE CHECK TO SEE IF myPlayers IS NECESSARY BELOW, OR sortedMyPlayers CAN WORK... 
+    refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList);
   }
   // if drop player name is different than name of current drag player, update replace player...
   else if (name !== draggedPlayer.displayName) {
-    // const { position, isAsc, myPlayers } = this.props; // *************************
-    // const sortedPlayers = sortPlayers(position, isAsc)(myPlayers); // CAN CALL IN TIER ROW COMPONENT with util funcs
     const newReplacedPlayer = myPlayers.filter(
       (player) => name.includes(player.displayName)
     );
-    modifiedPlayers = checkModifiedPlayers(draggedPlayer, newReplacedPlayer[0]);
+    modifiedPlayers = checkModifiedPlayers(draggedPlayer, newReplacedPlayer[0], sortedMyPlayers);
+    // *** DOUBLE CHECK TO SEE IF myPlayers IS NECESSARY BELOW, OR sortedMyPlayers CAN WORK...
     refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList); 
   }
   // default: do nothing
@@ -366,7 +364,14 @@ export const replacePlayer = (name = "", draggedPlayer, myPlayers, user, updateM
   }
 };
 
+export const changeDraggedPlayer = (name, sortedMyPlayers, updateDraggedPlayer) => {
+
+  // narrow the list of players to current position; determine which player is being dragged
+  const newDraggedPlayer = sortedMyPlayers.filter(
+    (player) => name.includes(player.displayName)
+  );
+  updateDraggedPlayer(newDraggedPlayer[0]);
+};
+
+
 // DRAG-N-DROP FUNCTIONS
-export const allowDrop = (event) => {
-    event.preventDefault();
-  };
