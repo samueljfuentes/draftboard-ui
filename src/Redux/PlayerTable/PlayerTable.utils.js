@@ -214,7 +214,6 @@ export const getPlayerLists = async (user) => {
 };
 
 export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updateMyPlayersList) => {
-  console.log('refreshing player order...')
   let myPlayerList = [...myPlayers];
   if (modifiedPlayers === null || modifiedPlayers === undefined) {
     return
@@ -261,7 +260,7 @@ export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updat
     alert('failed to upload database!!');
     console.log(err);
   }
-
+  console.log(myPlayerList);
   // send action...
   updateMyPlayersList(myPlayerList);
 };
@@ -269,6 +268,11 @@ export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updat
 export const checkModifiedPlayers = (dragPlayer, droppedOn, sortedPlayers) => {
   let playerRange; // array of players who's ranking are affected
   let newPlayerRanks; // array with updated rankings for players who are modified
+  
+  if (droppedOn === undefined || dragPlayer === undefined) {
+    return
+  };
+  
   // if dragging UP onto tier row
   if (typeof droppedOn === 'number' && droppedOn <= dragPlayer.tier) {
     playerRange = sortedPlayers.filter(player => player.tier >= droppedOn && player.rank <= dragPlayer.rank);
@@ -337,6 +341,7 @@ export const checkModifiedPlayers = (dragPlayer, droppedOn, sortedPlayers) => {
           };
     });
   };
+  console.log(newPlayerRanks);
   return newPlayerRanks
 };
 
@@ -345,8 +350,8 @@ export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlaye
 
   if (!name || name.includes('TIER')) {
     const tier = parseInt(name.slice('6'));
+    console.log(tier);
     modifiedPlayers = checkModifiedPlayers(draggedPlayer, tier, sortedMyPlayers);
-    // *** DOUBLE CHECK TO SEE IF myPlayers IS NECESSARY BELOW, OR sortedMyPlayers CAN WORK... 
     refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList);
   }
   // if drop player name is different than name of current drag player, update replace player...
@@ -355,7 +360,6 @@ export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlaye
       (player) => name.includes(player.displayName)
     );
     modifiedPlayers = checkModifiedPlayers(draggedPlayer, newReplacedPlayer[0], sortedMyPlayers);
-    // *** DOUBLE CHECK TO SEE IF myPlayers IS NECESSARY BELOW, OR sortedMyPlayers CAN WORK...
     refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList); 
   }
   // default: do nothing
@@ -365,13 +369,25 @@ export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlaye
 };
 
 export const changeDraggedPlayer = (name, sortedMyPlayers, updateDraggedPlayer) => {
-
   // narrow the list of players to current position; determine which player is being dragged
   const newDraggedPlayer = sortedMyPlayers.filter(
     (player) => name.includes(player.displayName)
   );
+  console.log(newDraggedPlayer);
   updateDraggedPlayer(newDraggedPlayer[0]);
 };
 
-
 // DRAG-N-DROP FUNCTIONS
+export const touchStart = (event, displayName, sortedMyPlayers, updateDraggedPlayer) => {
+  // event.preventDefault();
+  document.getElementById('draft-board').classList.add('lock-scroll');
+  changeDraggedPlayer(displayName, sortedMyPlayers, updateDraggedPlayer);
+};
+
+export const touchEnd = (event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList) => {
+  console.log('WE IN HERE!!!')
+  document.getElementById('draft-board').classList.remove('lock-scroll');
+  const playerToReplace = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY).textContent;
+  const playerName = playerToReplace.includes('TIER') ? playerToReplace : playerToReplace.slice(0, playerToReplace.indexOf('(') - 1);
+  replacePlayer(playerName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)
+};

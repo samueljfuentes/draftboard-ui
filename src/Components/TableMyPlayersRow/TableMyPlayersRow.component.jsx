@@ -1,17 +1,22 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { connect } from 'react-redux';
 
-import { removePlayer, replacePlayer, changeDraggedPlayer } from '../../Redux/PlayerTable/PlayerTable.utils';
+import { sortPlayers, removePlayer, replacePlayer, changeDraggedPlayer, touchStart, touchEnd } from '../../Redux/PlayerTable/PlayerTable.utils';
 import { updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer } from '../../Redux/PlayerTable/PlayerTable.actions';
+
+import './TableMyPlayersRow.styles.scss';
+
 
 const mapState = (state) => {
   return {
     allPlayers: state.playerTable.allPlayers,
     myPlayers: state.playerTable.myPlayers,
     draggedPlayer: state.playerTable.draggedPlayer,
+    isAsc: state.playerTable.isAsc,
+    position: state.playerTable.position,
     user: state.user.user
   }
-}
+};
 
 const mapDispatch = (dispatch) => {
   return {
@@ -19,31 +24,25 @@ const mapDispatch = (dispatch) => {
     updateMyPlayersList: (myPlayers) => dispatch(updateMyPlayersList(myPlayers)),
     updateDraggedPlayer: (draggedPlayer) => dispatch(updateDraggedPlayer(draggedPlayer))
   }
-}
+};
 
-const MyPlayersRow = ({ id, displayName, jersey, tier, rank, sortedMyPlayers, allPlayers, myPlayers, draggedPlayer, user, updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer, touchDrag, touchDrop }) => {
+const MyPlayersRow = ({ displayName, jersey, tier, rank, allPlayers, myPlayers, draggedPlayer, isAsc, position, user, updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer }) => {
+  
+  const sortedMyPlayers = sortPlayers(position, isAsc)(myPlayers);
 
   return (
     <tr 
       className="table__body--row"
       draggable
-      onDragStart={() => changeDraggedPlayer(displayName, sortedMyPlayers, updateDraggedPlayer)}
+      passive="false"
+      onDragStart={(event) => changeDraggedPlayer(displayName, sortedMyPlayers, updateDraggedPlayer)}
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => {
-        event.preventDefault()
-        // BELOW: CHECK TO SEE IF myPlayers & sortedMyPlayers ARE BOTH NECESSARY....
+        event.preventDefault();
         replacePlayer(displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)
       }}
-      onTouchStart={(event) => {
-        event.preventDefault();
-        document.getElementById('draft-board').classList.add('lock-scroll');
-        changeDraggedPlayer(displayName, sortedMyPlayers, updateDraggedPlayer);
-      }}
-      onTouchEnd={(event) => {
-        event.preventDefault();
-        document.getElementById('draft-board').classList.remove('lock-scroll');
-        replacePlayer(displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)
-      }}
+      onTouchStart={(event) => touchStart(event, displayName, sortedMyPlayers, updateDraggedPlayer)}
+      onTouchEnd={(event) => touchEnd(event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)}
     >
       <th className="table__body--cell1">{displayName} (#{jersey})</th>
       <td className="table__body--cell"><div onClick={(click) => removePlayer(click, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList)}> - </div></td>

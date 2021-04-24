@@ -9,6 +9,7 @@ import './TableAllPlayersRow.styles.scss';
 
 const mapState = (state) => {
   return {
+    allPlayers: state.playerTable.allPlayers,
     myPlayers: state.playerTable.myPlayers,
     user: state.user.user,
   }
