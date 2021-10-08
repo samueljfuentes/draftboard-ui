@@ -22,13 +22,13 @@ const TableHeader = ({ headerCells, isAsc, handleSortRequest, isMyPlayers }) => 
   return (
     <thead className="table__header">
       <tr className="table__header--row">
-        <th className="table__header--title" scope="column">Player Name</th>
+        <th className="table__header--title" scope="col">Player Name</th>
         {
           isMyPlayers ?
           headerCells.map((cell, i) => (
             <th 
-              className="table__header--cell" 
-              scope="column"
+              className="table__header--title" 
+              scope="col"
               onClick={() => handleSortRequest(cell.id, isAsc)} 
               key={i}
             >
@@ -36,10 +36,10 @@ const TableHeader = ({ headerCells, isAsc, handleSortRequest, isMyPlayers }) => 
             </th>
           )) : 
           <th 
-            className="table__header--cell"
-            scope="column" 
+            className="table__header--title"
+            scope="col" 
           >
-            Add to My Players
+            Add
           </th>
         }
       </tr>

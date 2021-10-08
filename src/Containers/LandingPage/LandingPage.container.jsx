@@ -14,13 +14,11 @@ const LandingPage = ({ route, loadUser, refreshRoute }) => {
 
   return (
     <div className="landing-page">
-      <div className="landing-page__content">
-        {
-          route === 'signin' ?
-          <SignIn loadUser={loadUser} refreshRoute={refreshRoute} /> :
-          <SignUp loadUser={loadUser} refreshRoute={refreshRoute} />
-        }
-      </div>
+      {
+        route === 'signin' ?
+        <SignIn loadUser={loadUser} refreshRoute={refreshRoute} /> :
+        <SignUp loadUser={loadUser} refreshRoute={refreshRoute} />
+      }
     </div>
   )
 };

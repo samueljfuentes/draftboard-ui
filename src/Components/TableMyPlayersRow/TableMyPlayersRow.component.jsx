@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { sortPlayers, removePlayer, replacePlayer, changeDraggedPlayer, touchStart, touchEnd } from '../../Redux/PlayerTable/PlayerTable.utils';
 import { updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer } from '../../Redux/PlayerTable/PlayerTable.actions';
 
+import { ReactComponent as RemoveSVG } from '../../Other/svg/remove.svg'
 import './TableMyPlayersRow.styles.scss';
 
 
@@ -26,7 +27,7 @@ const mapDispatch = (dispatch) => {
   }
 };
 
-const MyPlayersRow = ({ displayName, jersey, tier, rank, allPlayers, myPlayers, draggedPlayer, isAsc, position, user, updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer }) => {
+const MyPlayersRow = ({ displayName, team, tier, rank, allPlayers, myPlayers, draggedPlayer, isAsc, position, user, updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer }) => {
   
   const sortedMyPlayers = sortPlayers(position, isAsc)(myPlayers);
 
@@ -44,12 +45,17 @@ const MyPlayersRow = ({ displayName, jersey, tier, rank, allPlayers, myPlayers, 
       onTouchStart={(event) => touchStart(event, displayName, sortedMyPlayers, updateDraggedPlayer)}
       onTouchEnd={(event) => touchEnd(event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)}
     >
-      <th className="table__body--cell1">{displayName} (#{jersey})</th>
-      <td className="table__body--cell"><div onClick={(click) => removePlayer(click, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList)}> - </div></td>
+      <th className="table__body--cell1">{displayName} ({team})</th>
+      <td className="table__body--cell">
+        <RemoveSVG 
+          onClick={(click) => removePlayer(click, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList)} 
+        />
+      </td>
       <td className="table__body--cell">{tier}</td>
       <td className="table__body--cell">{rank}</td>
     </tr>
   )
 };
+
 
 export default connect(mapState, mapDispatch)(MyPlayersRow);

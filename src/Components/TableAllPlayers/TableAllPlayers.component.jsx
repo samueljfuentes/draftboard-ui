@@ -17,7 +17,7 @@ const AllPlayers = ({ allPlayers, position }) => {
             key={player.playerId}
             id={player.playerId}
             displayName={player.displayName}
-            jersey={player.jersey}
+            team={player.team}
           />
         ))
       }

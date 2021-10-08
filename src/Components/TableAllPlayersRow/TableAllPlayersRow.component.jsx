@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { updateMyPlayersList, updateAllPlayersList } from '../../Redux/PlayerTable/PlayerTable.actions';
 import { addPlayer } from '../../Redux/PlayerTable/PlayerTable.utils';
 
+import { ReactComponent as AddSVG } from '../../Other/svg/add.svg'
 import './TableAllPlayersRow.styles.scss';
 
 
@@ -23,12 +24,16 @@ const mapDispatch = (dispatch) => {
 }
 
 
-const AllPlayersRow = ({ id, displayName, jersey, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList }) => {
+const AllPlayersRow = ({ id, displayName, team, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList }) => {
 
   return (
     <tr key={id} id={id} className="table__body--row">
-      <th className="table__body--cell1" scope="row">{`${displayName} (#${jersey})`}</th>
-      <td className="table__body--cell"><div onClick={(click) => {addPlayer(click, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList)}}>+</div></td>
+      <th className="table__body--cell1" scope="row">{`${displayName} (${team})`}</th>
+      <td className="table__body--cell">
+        <div onClick={(click) => {addPlayer(click, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList)}}>
+          <AddSVG />
+        </div>
+      </td>
     </tr>
   )
 };

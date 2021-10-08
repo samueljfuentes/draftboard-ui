@@ -15,6 +15,7 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { faSearch, faTools, faUserCircle } from '@fortawesome/free-solid-svg-icons';
 
 import './App.scss';
+import '../Other/Styles/svg-icons.scss'
 
 
 library.add(faSearch, faUserCircle, faTools);
@@ -22,13 +23,14 @@ library.add(faSearch, faUserCircle, faTools);
 
 const mapState = (state) => {
   return {
-    user: state.user.user
+    user: state.user.user,
+    routes: state.user.routes
   }
 }
 
 const mapDispatch = (dispatch) => {
   return {
-    setUser: (user) => dispatch(setUser(user))
+    setUser: (user) => dispatch(setUser(user)),
   }
 };
 
@@ -53,7 +55,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { user } = this.props;
+    const { user, routes } = this.props;
     const token = window.sessionStorage.getItem('token');
     return (
       <>
@@ -66,7 +68,7 @@ class App extends React.Component {
             }
             // get profile is there is a sesssion
             if (token) {
-              fetch('http://localhost:3000/signin', {
+              fetch(routes.signin, {
                 method: 'POST',
                 headers: {
                   'content-type': 'application/json',
@@ -76,7 +78,7 @@ class App extends React.Component {
               .then(resp => resp.json())
               .then(user => {
                 if (user && user.userid) {
-                  fetch(`http://localhost:3000/profile/${parseInt(user.userid)}`, {
+                  fetch(`${routes.profile + parseInt(user.userid)}`, {
                     method: 'GET',
                     headers: {
                       'content-type': 'application/json',

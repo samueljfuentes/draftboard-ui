@@ -1,9 +1,10 @@
 .position__nav {
 
   &--container {
-    background-color: #000;
+    background-color: #3f51b5;
     border-bottom: 1px solid rgba(224, 224, 224, 1);
-    height: min-content;
+    position: sticky;
+    bottom: 0;
   }
 
   &--inner {

@@ -1,3 +1,6 @@
+import userReducer from "../User/User.reducer";
+const routes = userReducer().routes
+
 // SORT FUNCTIONS
 export const sortByRanks = (isAsc) => (players) => {
   const sortedPlayers = players.sort((a, b) => {
@@ -95,10 +98,10 @@ export const sortPlayers = (position, isAsc) => {
 export const addPlayer = async (clickEvent, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList) => {
   // get the name of the player being added...
   const nodeValue = clickEvent.currentTarget.parentNode.previousSibling.textContent;
-  const playerJersey = nodeValue.slice(nodeValue.indexOf('(') + 2, nodeValue.length - 1);
+  const team = nodeValue.slice(nodeValue.indexOf('(') + 1, nodeValue.indexOf(')'));
   const playerName = nodeValue.slice(0, nodeValue.indexOf('(') - 1);
   // determine player object...
-  const player = allPlayers.filter(player => player.displayName === playerName && player.jersey === parseInt(playerJersey));
+  const player = allPlayers.filter(player => player.displayName === playerName && player.team === team);
   const username = user.userid ? user.username : "guest";
   
   try {
@@ -121,7 +124,7 @@ export const addPlayer = async (clickEvent, allPlayers, myPlayers, user, updateM
     else {
       // update user list...
       // add player to my player list and return updated list...
-      let response = await fetch('http://localhost:3000/addplayer', {
+      let response = await fetch(`${routes.addPlayer}`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -161,7 +164,7 @@ export const removePlayer = async (clickEvent, allPlayers, myPlayers, user, upda
       updateAllPlayersList(newAllPlayers);
     }
     else {
-      let response = await fetch('http://localhost:3000/removeplayer', {
+      let response = await fetch(`${routes.removePlayer}`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -196,7 +199,7 @@ export const compareLists = (myPlayers, allPlayers) => {
 
 export const getPlayerLists = async (user) => {
   const token = window.sessionStorage.getItem('token');
-  let players = await fetch('http://localhost:3000/draftboard', {
+  let players = await fetch(`${routes.draftboard}`, {
     method: 'POST',
     headers: {
       'content-type': 'application/json',
@@ -233,7 +236,7 @@ export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updat
     const token = window.sessionStorage.getItem('token'); 
     const username = user.userid ? user.username : 'guest';
     if (username !== 'guest') {
-      await fetch('http://localhost:3000/updatemyplayers', {
+      await fetch(`${routes.updateMyPlayers}`, {
         method: 'POST',
         headers: {
           'content-type': 'application/json',
@@ -260,7 +263,6 @@ export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updat
     alert('failed to upload database!!');
     console.log(err);
   }
-  console.log(myPlayerList);
   // send action...
   updateMyPlayersList(myPlayerList);
 };
@@ -341,7 +343,6 @@ export const checkModifiedPlayers = (dragPlayer, droppedOn, sortedPlayers) => {
           };
     });
   };
-  console.log(newPlayerRanks);
   return newPlayerRanks
 };
 
@@ -350,7 +351,6 @@ export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlaye
 
   if (!name || name.includes('TIER')) {
     const tier = parseInt(name.slice('6'));
-    console.log(tier);
     modifiedPlayers = checkModifiedPlayers(draggedPlayer, tier, sortedMyPlayers);
     refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList);
   }
@@ -373,21 +373,19 @@ export const changeDraggedPlayer = (name, sortedMyPlayers, updateDraggedPlayer) 
   const newDraggedPlayer = sortedMyPlayers.filter(
     (player) => name.includes(player.displayName)
   );
-  console.log(newDraggedPlayer);
   updateDraggedPlayer(newDraggedPlayer[0]);
 };
 
 // DRAG-N-DROP FUNCTIONS
 export const touchStart = (event, displayName, sortedMyPlayers, updateDraggedPlayer) => {
-  // event.preventDefault();
   document.getElementById('draft-board').classList.add('lock-scroll');
   changeDraggedPlayer(displayName, sortedMyPlayers, updateDraggedPlayer);
 };
 
 export const touchEnd = (event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList) => {
-  console.log('WE IN HERE!!!')
   document.getElementById('draft-board').classList.remove('lock-scroll');
-  const playerToReplace = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY).textContent;
+  const releasePoint = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
+  const playerToReplace = releasePoint ? releasePoint.textContent : 'noPlayer';
   const playerName = playerToReplace.includes('TIER') ? playerToReplace : playerToReplace.slice(0, playerToReplace.indexOf('(') - 1);
   replacePlayer(playerName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)
 };

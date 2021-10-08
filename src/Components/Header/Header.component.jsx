@@ -3,7 +3,8 @@ import { connect } from 'react-redux';
 
 import { toggleMyPlayers, toggleProfile } from '../../Redux/PlayerTable/PlayerTable.actions';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ReactComponent as ProfileSVG } from '../../Other/svg/profile.svg';
+import { ReactComponent as SearchSVG } from '../../Other/svg/search.svg';
 import './Header.styles.scss';
 
 
@@ -25,31 +26,14 @@ const Header = ({ isMyPlayers, isProfileOpen, toggleMyPlayers, toggleProfile }) 
   return (
     <header className="header">
       <div className="header__content">
-        <div className="header__icons--container">
-          <div className="header__icons--profile-container">
-            <FontAwesomeIcon 
-              className="header__icons--profile" 
-              icon="user-circle"
-              aria-hidden="true"
-              onClick={() => toggleProfile(isProfileOpen)}       
-            />
-          </div>
-          <div className="header__icons--settings-container">
-            <FontAwesomeIcon 
-              className="header__icons--settings"
-              icon="tools"
-              aria-hidden="true"
-              onClick={() => toggleMyPlayers(isMyPlayers)}
-            />
-          </div>
-        </div>
         <div className="header__search--container">
           <div className="header__search--icon-container">
-            <FontAwesomeIcon
+            <SearchSVG />
+            {/* <FontAwesomeIcon
               className="header__search--icon"
               icon="search"
               aria-hidden="true"
-            />
+            /> */}
           </div>
           <div className="header__search--input-container">
             <input
@@ -59,6 +43,29 @@ const Header = ({ isMyPlayers, isProfileOpen, toggleMyPlayers, toggleProfile }) 
               aria-label="search"
             />
           </div>
+        </div>
+        <div className="header__icons--container">
+          <button className="header__icons--profile">
+            <ProfileSVG 
+              onClick={() => toggleProfile(isProfileOpen)}
+            />
+          </button>
+          {/* <div className="header__icons--profile-container">
+            <FontAwesomeIcon 
+              className="header__icons--profile" 
+              icon="user-circle"
+              aria-hidden="true"
+              onClick={() => toggleProfile(isProfileOpen)}       
+            />
+          </div> */}
+          {/* <div className="header__icons--settings-container">
+            <FontAwesomeIcon 
+              className="header__icons--settings"
+              icon="tools"
+              aria-hidden="true"
+              onClick={() => toggleMyPlayers(isMyPlayers)}
+            />
+          </div> */}
         </div>
       </div>
     </header>
