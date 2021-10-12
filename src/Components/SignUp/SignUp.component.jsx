@@ -6,11 +6,11 @@ import { ReactComponent as ForwardSVG } from '../../Other/svg/forward.svg';
 // IMPORT STYLES
 import './SignUp.styles.scss';
 // IMPORT API ROUTES
-import userReducer from '../../Redux/User/User.reducer';
-const routes = userReducer().routes;
+// import userReducer from '../../Redux/User/User.reducer';
+// const routes = userReducer().routes;
 
 // SIGN UP COMPONENT
-const SignUp = ({ loadUser, refreshRoute }) => {
+const SignUp = ({ loadUser, refreshRoute, routes }) => {
 
   const [username, updateUsername] = useState('');
   const [password, updatePassword] = useState('');

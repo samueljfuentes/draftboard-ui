@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 // IMPORT ACTIONS
-import { setUser } from '../Redux/User/User.actions'
+import { setUser, setRoutes } from '../Redux/User/User.actions'
 
 // IMPORT CONTAINERS & COMPONENTS
 import LandingPage from '../Containers/LandingPage/LandingPage.container';
@@ -31,12 +31,14 @@ const mapState = (state) => {
 const mapDispatch = (dispatch) => {
   return {
     setUser: (user) => dispatch(setUser(user)),
+    // setRoutes: (routes) => dispatch(setRoutes(routes))
   }
 };
 
 class App extends React.Component {
   componentDidMount() {
-    console.log('APP MOUNTED...')
+    console.log('APP MOUNTED...');
+    
   }
 
   loadUser = (newUser) => {
@@ -60,8 +62,8 @@ class App extends React.Component {
     return (
       <>
         <Switch>
-          <Route exact path='/signin' render={() => <LandingPage route='signin' loadUser={this.loadUser} refreshRoute={this.refreshRoute}/>} />
-          <Route exact path='/signup' render={() => <LandingPage route='signup' loadUser={this.loadUser} refreshRoute={this.refreshRoute} />} />
+          <Route exact path='/signin' render={() => <LandingPage route='signin' loadUser={this.loadUser} refreshRoute={this.refreshRoute} routes={routes} />} />
+          <Route exact path='/signup' render={() => <LandingPage route='signup' loadUser={this.loadUser} refreshRoute={this.refreshRoute} routes={routes} />} />
           <Route exact path='/draftboard' render={() => {
             if ((user && user.userid) || (token === 'guest')) {
               return <Draftboard />

@@ -32,6 +32,11 @@ const userReducer = (state = INITIAL_STATE, action) => {
         ...state,
         user: action.payload
       }
+    case 'SET_ROUTES':
+      return {
+        ...state,
+        routes: action.payload
+      }
     default:
       return state;
   }

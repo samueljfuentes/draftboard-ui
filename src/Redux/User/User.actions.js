@@ -4,3 +4,10 @@ export const setUser = (user) => {
     payload: user
   }
 };
+
+export const setRoutes = (routes) => {
+  return {
+    type: "SET_ROUTES",
+    payload: routes
+  }
+};

@@ -5,11 +5,12 @@ import { Link } from 'react-router-dom';
 import { ReactComponent as ForwardSVG } from '../../Other/svg/forward.svg';
 import './SignIn.styles.scss';
 // IMPORT API ROUTES
-import userReducer from '../../Redux/User/User.reducer';
-const routes = userReducer().routes
+// import userReducer from '../../Redux/User/User.reducer';
+// const routes = userReducer().routes;
 
 // SIGN IN COMPONENT
-const SignIn = ({loadUser, refreshRoute}) => {
+const SignIn = ({loadUser, refreshRoute, routes}) => {
+  console.log(routes);
   
   const [username, updateUsername] = useState('');
   const [password, updatePassword] = useState('');

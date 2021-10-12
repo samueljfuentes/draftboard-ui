@@ -15,7 +15,8 @@ const mapState = (state) => {
     draggedPlayer: state.playerTable.draggedPlayer,
     isAsc: state.playerTable.isAsc,
     position: state.playerTable.position,
-    user: state.user.user
+    user: state.user.user,
+    routes: state.user.routes
   }
 };
 
@@ -27,7 +28,7 @@ const mapDispatch = (dispatch) => {
   }
 };
 
-const MyPlayersRow = ({ displayName, team, tier, rank, allPlayers, myPlayers, draggedPlayer, isAsc, position, user, updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer }) => {
+const MyPlayersRow = ({ displayName, team, tier, rank, allPlayers, myPlayers, draggedPlayer, isAsc, position, user, routes, updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer }) => {
   
   const sortedMyPlayers = sortPlayers(position, isAsc)(myPlayers);
 
@@ -48,7 +49,7 @@ const MyPlayersRow = ({ displayName, team, tier, rank, allPlayers, myPlayers, dr
       <th className="table__body--cell1">{displayName} ({team})</th>
       <td className="table__body--cell">
         <RemoveSVG 
-          onClick={(click) => removePlayer(click, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList)} 
+          onClick={(click) => removePlayer(click, allPlayers, myPlayers, user, routes, updateMyPlayersList, updateAllPlayersList)} 
         />
       </td>
       <td className="table__body--cell">{tier}</td>

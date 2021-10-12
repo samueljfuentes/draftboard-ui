@@ -1,6 +1,3 @@
-import userReducer from "../User/User.reducer";
-const routes = userReducer().routes
-
 // SORT FUNCTIONS
 export const sortByRanks = (isAsc) => (players) => {
   const sortedPlayers = players.sort((a, b) => {
@@ -95,7 +92,7 @@ export const sortPlayers = (position, isAsc) => {
 };
 
 // ORGANIZE PLAYER FUNCTIONS
-export const addPlayer = async (clickEvent, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList) => {
+export const addPlayer = async (clickEvent, allPlayers, myPlayers, user, routes, updateMyPlayersList, updateAllPlayersList) => {
   // get the name of the player being added...
   const nodeValue = clickEvent.currentTarget.parentNode.previousSibling.textContent;
   const team = nodeValue.slice(nodeValue.indexOf('(') + 1, nodeValue.indexOf(')'));
@@ -147,7 +144,7 @@ export const addPlayer = async (clickEvent, allPlayers, myPlayers, user, updateM
   }
 };
 
-export const removePlayer = async (clickEvent, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList) => {
+export const removePlayer = async (clickEvent, allPlayers, myPlayers, user, routes, updateMyPlayersList, updateAllPlayersList) => {
   const username = user.userid ? user.username : 'guest';
   const nodeValue = clickEvent.currentTarget.parentNode.previousSibling.textContent;
   const playerJersey = nodeValue.slice(nodeValue.indexOf('(') + 2, nodeValue.length - 1);
@@ -197,7 +194,7 @@ export const compareLists = (myPlayers, allPlayers) => {
   return newAllPlayers
 };
 
-export const getPlayerLists = async (user) => {
+export const getPlayerLists = async (user, routes) => {
   const token = window.sessionStorage.getItem('token');
   let players = await fetch(`${routes.draftboard}`, {
     method: 'POST',
@@ -216,7 +213,7 @@ export const getPlayerLists = async (user) => {
   };
 };
 
-export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updateMyPlayersList) => {
+export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, routes, updateMyPlayersList) => {
   let myPlayerList = [...myPlayers];
   if (modifiedPlayers === null || modifiedPlayers === undefined) {
     return

@@ -13,6 +13,7 @@ const mapState = (state) => {
     allPlayers: state.playerTable.allPlayers,
     myPlayers: state.playerTable.myPlayers,
     user: state.user.user,
+    routes: state.user.routes
   }
 };
 
@@ -24,13 +25,13 @@ const mapDispatch = (dispatch) => {
 }
 
 
-const AllPlayersRow = ({ id, displayName, team, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList }) => {
+const AllPlayersRow = ({ id, displayName, team, allPlayers, myPlayers, user, routes, updateMyPlayersList, updateAllPlayersList }) => {
 
   return (
     <tr key={id} id={id} className="table__body--row">
       <th className="table__body--cell1" scope="row">{`${displayName} (${team})`}</th>
       <td className="table__body--cell">
-        <div onClick={(click) => {addPlayer(click, allPlayers, myPlayers, user, updateMyPlayersList, updateAllPlayersList)}}>
+        <div onClick={(click) => {addPlayer(click, allPlayers, myPlayers, user, routes, updateMyPlayersList, updateAllPlayersList)}}>
           <AddSVG />
         </div>
       </td>
