@@ -9,15 +9,15 @@ import SignUp from '../../Components/SignUp/SignUp.component';
 import './LandingPage.styles.scss';
 
 // LANDING PAGE COMPONENT
-const LandingPage = ({ route, loadUser, refreshRoute }) => {
+const LandingPage = ({ route, loadUser, refreshRoute, apiRoutes }) => {
 
 
   return (
     <div className="landing-page">
       {
         route === 'signin' ?
-        <SignIn loadUser={loadUser} refreshRoute={refreshRoute} /> :
-        <SignUp loadUser={loadUser} refreshRoute={refreshRoute} />
+        <SignIn loadUser={loadUser} refreshRoute={refreshRoute} routes={apiRoutes} /> :
+        <SignUp loadUser={loadUser} refreshRoute={refreshRoute} routes={apiRoutes} />
       }
     </div>
   )

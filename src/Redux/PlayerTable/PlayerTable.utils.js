@@ -145,13 +145,14 @@ export const addPlayer = async (clickEvent, allPlayers, myPlayers, user, routes,
 };
 
 export const removePlayer = async (clickEvent, allPlayers, myPlayers, user, routes, updateMyPlayersList, updateAllPlayersList) => {
+  console.log(allPlayers);
+  console.log(myPlayers);
   const username = user.userid ? user.username : 'guest';
   const nodeValue = clickEvent.currentTarget.parentNode.previousSibling.textContent;
-  const playerJersey = nodeValue.slice(nodeValue.indexOf('(') + 2, nodeValue.length - 1);
+  // const playerJersey = nodeValue.slice(nodeValue.indexOf('(') + 2, nodeValue.length - 1);
   const playerName = nodeValue.slice(0, nodeValue.indexOf('(') - 1);
   // determine player object...
-  const player = myPlayers.filter(player => player.displayName === playerName && player.jersey === parseInt(playerJersey))[0];
-
+  const player = myPlayers.filter(player => player.displayName === playerName)[0];
   try {
     if (username === 'guest') {    
       const newMyPlayers = myPlayers.filter(myPlayer => myPlayer.playerId !== player.playerId);
@@ -213,7 +214,9 @@ export const getPlayerLists = async (user, routes) => {
   };
 };
 
-export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, routes, updateMyPlayersList) => {
+export const refreshPlayerOrder = async (modifiedPlayers, myPlayers, user, updateMyPlayersList, routes) => {
+  console.log(routes);
+
   let myPlayerList = [...myPlayers];
   if (modifiedPlayers === null || modifiedPlayers === undefined) {
     return
@@ -343,13 +346,16 @@ export const checkModifiedPlayers = (dragPlayer, droppedOn, sortedPlayers) => {
   return newPlayerRanks
 };
 
-export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayerList) => {
+export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayerList, routes) => {
   let modifiedPlayers;
+
+  console.log(myPlayers);
+  console.log(sortedMyPlayers);
 
   if (!name || name.includes('TIER')) {
     const tier = parseInt(name.slice('6'));
     modifiedPlayers = checkModifiedPlayers(draggedPlayer, tier, sortedMyPlayers);
-    refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList);
+    refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList, routes);
   }
   // if drop player name is different than name of current drag player, update replace player...
   else if (name !== draggedPlayer.displayName) {
@@ -357,7 +363,7 @@ export const replacePlayer = (name = "", draggedPlayer, myPlayers, sortedMyPlaye
       (player) => name.includes(player.displayName)
     );
     modifiedPlayers = checkModifiedPlayers(draggedPlayer, newReplacedPlayer[0], sortedMyPlayers);
-    refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList); 
+    refreshPlayerOrder(modifiedPlayers, myPlayers, user, updateMyPlayerList, routes); 
   }
   // default: do nothing
   else {
@@ -379,10 +385,10 @@ export const touchStart = (event, displayName, sortedMyPlayers, updateDraggedPla
   changeDraggedPlayer(displayName, sortedMyPlayers, updateDraggedPlayer);
 };
 
-export const touchEnd = (event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList) => {
+export const touchEnd = (event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList, routes) => {
   document.getElementById('draft-board').classList.remove('lock-scroll');
   const releasePoint = document.elementFromPoint(event.changedTouches[0].clientX, event.changedTouches[0].clientY);
   const playerToReplace = releasePoint ? releasePoint.textContent : 'noPlayer';
   const playerName = playerToReplace.includes('TIER') ? playerToReplace : playerToReplace.slice(0, playerToReplace.indexOf('(') - 1);
-  replacePlayer(playerName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)
+  replacePlayer(playerName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList, routes)
 };

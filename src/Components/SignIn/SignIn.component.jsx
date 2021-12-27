@@ -10,7 +10,6 @@ import './SignIn.styles.scss';
 
 // SIGN IN COMPONENT
 const SignIn = ({loadUser, refreshRoute, routes}) => {
-  console.log(routes);
   
   const [username, updateUsername] = useState('');
   const [password, updatePassword] = useState('');

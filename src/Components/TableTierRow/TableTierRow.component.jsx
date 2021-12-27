@@ -13,7 +13,8 @@ const mapState = (state) => {
     draggedPlayer: state.playerTable.draggedPlayer,
     isAsc: state.playerTable.isAsc,
     position: state.playerTable.position,
-    user: state.user.user
+    user: state.user.user,
+    routes: state.user.routes
   }
 };
 
@@ -23,7 +24,7 @@ const mapDispatch = (dispatch) => {
   }
 };
 
-const TierRow = ({ tier, myPlayers, draggedPlayer, isAsc, position, user, updateMyPlayersList }) => {
+const TierRow = ({ tier, myPlayers, draggedPlayer, isAsc, position, user, updateMyPlayersList, routes }) => {
   const sortedMyPlayers = sortPlayers(position, isAsc)(myPlayers);
   return (
     <tr className="tier__row" 
@@ -32,7 +33,7 @@ const TierRow = ({ tier, myPlayers, draggedPlayer, isAsc, position, user, update
       // onDrop={(event) => drop(event, `TIER: ${tier}`)}
       onDrop={(event) => {
         event.preventDefault();
-        replacePlayer(`TIER: ${tier}`, draggedPlayer, sortedMyPlayers, sortedMyPlayers, user, updateMyPlayersList)
+        replacePlayer(`TIER: ${tier}`, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList, routes)
       }}
     >
       <th className="tier__cell" colSpan="4"> TIER: {tier} </th>

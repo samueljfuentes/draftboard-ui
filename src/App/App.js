@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Redirect, Route, Switch, withRouter } from 'react-router-dom';
 
 // IMPORT ACTIONS
-import { setUser, setRoutes } from '../Redux/User/User.actions'
+import { setUser } from '../Redux/User/User.actions'
 
 // IMPORT CONTAINERS & COMPONENTS
 import LandingPage from '../Containers/LandingPage/LandingPage.container';
@@ -38,6 +38,7 @@ const mapDispatch = (dispatch) => {
 class App extends React.Component {
   componentDidMount() {
     console.log('APP MOUNTED...');
+    console.log(this.props.routes)
     
   }
 
@@ -59,16 +60,23 @@ class App extends React.Component {
   render() {
     const { user, routes } = this.props;
     const token = window.sessionStorage.getItem('token');
+    // VERIFY IF NECESSARY IN PRODUCTION... --------------------
+    console.log(process.env.NODE_ENV);
+    const homeRoute = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
+    '/draftboard-ui' :
+    '/draftboard-ui';
+    console.log(homeRoute);
+    // ---------------------------------------------------------
     return (
       <>
         <Switch>
-          <Route exact path='/signin' render={() => <LandingPage route='signin' loadUser={this.loadUser} refreshRoute={this.refreshRoute} routes={routes} />} />
-          <Route exact path='/signup' render={() => <LandingPage route='signup' loadUser={this.loadUser} refreshRoute={this.refreshRoute} routes={routes} />} />
+          <Route exact path='/signin' render={() => <LandingPage route='signin' loadUser={this.loadUser} refreshRoute={this.refreshRoute} apiRoutes={routes} />} />
+          <Route exact path='/signup' render={() => <LandingPage route='signup' loadUser={this.loadUser} refreshRoute={this.refreshRoute} apiRoutes={routes} />} />
           <Route exact path='/draftboard' render={() => {
             if ((user && user.userid) || (token === 'guest')) {
               return <Draftboard />
             }
-            // get profile is there is a sesssion
+            // get profile if there is a sesssion
             if (token) {
               fetch(routes.signin, {
                 method: 'POST',
@@ -100,7 +108,7 @@ class App extends React.Component {
               .catch(err => console.log(err))
             }
           }} />
-          <Route exact path='/' >
+          <Route exact path={homeRoute} >
             <Redirect to='/signin' />
           </Route>
         </Switch>

@@ -17,6 +17,7 @@ import './Draftboard.styles.scss';
 const mapState = (state) => {
   return {
     user: state.user.user,
+    routes: state.user.routes,
     allPlayers: state.playerTable.allPlayers,
     myPlayers: state.playerTable.myPlayers,
     isProfileOpen: state.playerTable.isProfileOpen,
@@ -46,7 +47,7 @@ class PlayerTable extends React.Component {
   async componentDidMount() {
     console.log('PLAYER TABLE MOUNTED..getting player lists...');
     
-    const allPlayers = await getPlayerLists(this.props.user);
+    const allPlayers = await getPlayerLists(this.props.user, this.props.routes);
     allPlayers ? this.props.updateAllPlayers(allPlayers) : alert('Server Error: Failed to fetch players. Please try again later.')
   };
 

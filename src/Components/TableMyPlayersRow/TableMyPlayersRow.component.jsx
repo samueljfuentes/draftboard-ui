@@ -31,6 +31,8 @@ const mapDispatch = (dispatch) => {
 const MyPlayersRow = ({ displayName, team, tier, rank, allPlayers, myPlayers, draggedPlayer, isAsc, position, user, routes, updateAllPlayersList, updateMyPlayersList, updateDraggedPlayer }) => {
   
   const sortedMyPlayers = sortPlayers(position, isAsc)(myPlayers);
+  console.log(myPlayers);
+  console.log(displayName);
 
   return (
     <tr 
@@ -41,10 +43,11 @@ const MyPlayersRow = ({ displayName, team, tier, rank, allPlayers, myPlayers, dr
       onDragOver={(event) => event.preventDefault()}
       onDrop={(event) => {
         event.preventDefault();
-        replacePlayer(displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)
+        console.log(myPlayers);
+        replacePlayer(displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList, routes)
       }}
       onTouchStart={(event) => touchStart(event, displayName, sortedMyPlayers, updateDraggedPlayer)}
-      onTouchEnd={(event) => touchEnd(event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList)}
+      onTouchEnd={(event) => touchEnd(event, displayName, draggedPlayer, myPlayers, sortedMyPlayers, user, updateMyPlayersList, routes)}
     >
       <th className="table__body--cell1">{displayName} ({team})</th>
       <td className="table__body--cell">
