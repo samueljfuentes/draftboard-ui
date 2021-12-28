@@ -37,6 +37,7 @@ const SignUp = ({ loadUser, refreshRoute, routes }) => {
     try {
       // send username, password, & passwordConfirm to backend...
       console.log(routes.signup);
+      console.log(process.env);
       let response = await fetch(`${routes.signup}`, {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
