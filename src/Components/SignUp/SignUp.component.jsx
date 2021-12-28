@@ -36,6 +36,7 @@ const SignUp = ({ loadUser, refreshRoute, routes }) => {
 
     try {
       // send username, password, & passwordConfirm to backend...
+      console.log(routes.signup);
       let response = await fetch(`${routes.signup}`, {
         method: 'post',
         headers: {'Content-Type': 'application/json'},
@@ -46,6 +47,7 @@ const SignUp = ({ loadUser, refreshRoute, routes }) => {
         })
       });
       session = await response.json(); 
+      console.log(session);
     } 
     catch (error) {
       alert('Error Signing Up, please try again.');
