@@ -1,14 +1,14 @@
 {
   "files": {
     "main.css": "/draftboard-ui/static/css/main.b75b5581.chunk.css",
-    "main.js": "/draftboard-ui/static/js/main.f64b870d.chunk.js",
-    "main.js.map": "/draftboard-ui/static/js/main.f64b870d.chunk.js.map",
+    "main.js": "/draftboard-ui/static/js/main.3fd6b8d2.chunk.js",
+    "main.js.map": "/draftboard-ui/static/js/main.3fd6b8d2.chunk.js.map",
     "runtime-main.js": "/draftboard-ui/static/js/runtime-main.51cff5d1.js",
     "runtime-main.js.map": "/draftboard-ui/static/js/runtime-main.51cff5d1.js.map",
     "static/js/2.27b29e82.chunk.js": "/draftboard-ui/static/js/2.27b29e82.chunk.js",
     "static/js/2.27b29e82.chunk.js.map": "/draftboard-ui/static/js/2.27b29e82.chunk.js.map",
     "index.html": "/draftboard-ui/index.html",
-    "precache-manifest.654c9525cf802c3cfcf31c0bc92d57ba.js": "/draftboard-ui/precache-manifest.654c9525cf802c3cfcf31c0bc92d57ba.js",
+    "precache-manifest.7a3a6fb3e408922003495c6b4b00dd3c.js": "/draftboard-ui/precache-manifest.7a3a6fb3e408922003495c6b4b00dd3c.js",
     "service-worker.js": "/draftboard-ui/service-worker.js",
     "static/css/main.b75b5581.chunk.css.map": "/draftboard-ui/static/css/main.b75b5581.chunk.css.map",
     "static/js/2.27b29e82.chunk.js.LICENSE.txt": "/draftboard-ui/static/js/2.27b29e82.chunk.js.LICENSE.txt",
@@ -25,6 +25,6 @@
     "static/js/runtime-main.51cff5d1.js",
     "static/js/2.27b29e82.chunk.js",
     "static/css/main.b75b5581.chunk.css",
-    "static/js/main.f64b870d.chunk.js"
+    "static/js/main.3fd6b8d2.chunk.js"
   ]
 }
