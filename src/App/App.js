@@ -60,11 +60,12 @@ class App extends React.Component {
   render() {
     const { user, routes } = this.props;
     const token = window.sessionStorage.getItem('token');
+    console.log(token);
     // VERIFY IF NECESSARY IN PRODUCTION... --------------------
     console.log(process.env.NODE_ENV);
     const homeRoute = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
     '/draftboard-ui' :
-    '/draftboard-ui';
+    '/draftboard';
     console.log(homeRoute);
     // ---------------------------------------------------------
     return (
