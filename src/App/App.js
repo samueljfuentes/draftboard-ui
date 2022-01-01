@@ -65,7 +65,7 @@ class App extends React.Component {
     console.log(process.env.NODE_ENV);
     const homeRoute = !process.env.NODE_ENV || process.env.NODE_ENV === 'development' ?
     '/draftboard-ui' :
-    '/draftboard';
+    '/draftboard-ui';
     console.log(homeRoute);
     // ---------------------------------------------------------
     return (
