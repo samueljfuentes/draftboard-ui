@@ -1,12 +1,12 @@
 // IMPORT LIBRARIES
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
+
+import Loader from '../Loader/Loader.component';
 // IMPORT STYLES & ICONS
 import { ReactComponent as ForwardSVG } from '../../Other/svg/forward.svg';
 import './SignIn.styles.scss';
-// IMPORT API ROUTES
-// import userReducer from '../../Redux/User/User.reducer';
-// const routes = userReducer().routes;
+
 
 // SIGN IN COMPONENT
 const SignIn = ({loadUser, refreshRoute, routes}) => {
@@ -21,10 +21,19 @@ const SignIn = ({loadUser, refreshRoute, routes}) => {
     updatePassword('');
   };
 
+  const startLoader = () => {
+    const loader = document.getElementById("loader");
+    loader.hidden = false;
+  };
+
+  const closeLoader = () => {
+    const loader = document.getElementById("loader");
+    loader.hidden = true;
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
-    console.log(username);
-    console.log(password);
+    startLoader();
     try {
       // send username & password to backend & store in DB
       let response = await fetch(`${routes.signin}`, {
@@ -38,7 +47,6 @@ const SignIn = ({loadUser, refreshRoute, routes}) => {
         })
       });
       const session = await response.json();
-      console.log(session);
       // check that session data is correct...
       if (session.userid && session.success) {
         // save the token in browser session and get user profile...
@@ -51,8 +59,8 @@ const SignIn = ({loadUser, refreshRoute, routes}) => {
           }
         })
         const user = await userData.json();
-        console.log(user);
         if (user.userid && user.username) {
+          closeLoader();
           loadUser(user);
           resetFields();
           refreshRoute('/draftboard')
@@ -60,7 +68,6 @@ const SignIn = ({loadUser, refreshRoute, routes}) => {
       }  
     }
     catch (error) {
-      console.log(error)
       alert('Error signing in. Please try again.');
     }
   };
@@ -71,6 +78,7 @@ const SignIn = ({loadUser, refreshRoute, routes}) => {
         RedZone Rumble
       </div>
       <form className="sign-in__form">
+        <Loader />
         <fieldset className="sign-in__content">
           <legend className="sign-in__content--legend">
             Sign in & start organizing a draftboard
@@ -97,28 +105,6 @@ const SignIn = ({loadUser, refreshRoute, routes}) => {
         </button>
       </Link>
     </div>
-    // <form className="sign-in-box">
-    //   <fieldset id="sign-in" className="sign-in-box__content">
-    //     <legend className="sign-in-box__title">Sign in & personalize a draft board</legend>
-    //     <div className="sign-in-box__field">
-    //       <label htmlFor="user-username" className="sign-in-box__field--title">username</label>
-    //       <input type="username" name="user-username" id="user-username" className="sign-in-box__field--input" onChange={(event) => updateUsername(event.target.value)} />
-    //     </div>
-    //     <div className="sign-in-box__field">
-    //       <label htmlFor="password" className="sign-in-box__field--title">Password</label>
-    //       <input type="password" name="password" id="password" className="sign-in-box__field--input" onChange={(event) => updatePassword(event.target.value)} />
-    //     </div>
-    //     <div className="sign-in-box__reset-pswd">
-    //       <Link target="_blank" className="sign-in-box__reset-pswd--link" to={()=>'/reset'}>Forgot your password?</Link>
-    //     </div>
-    //     <button className="sign-in-box__button" onClick={(event)=>handleSubmit(event)} >Sign In</button>
-    //     <div className="sign-in-box__account-status">
-    //       Not signed up? <br />
-    //       <Link className="sign-in-box__account-status--signup" to={() => '/signup'} >Create a free account</Link> quickly and easily to save your changes! <br />
-    //       Or <Link className="sign-in-box__account-status--guest" onClick={() => loadUser('guest')} to={() => '/draftboard'} >continue as a guest</Link> if you prefer.
-    //     </div>
-    //   </fieldset>
-    // </form>
   )
 };
 
