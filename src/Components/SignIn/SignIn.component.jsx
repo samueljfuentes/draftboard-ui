@@ -23,7 +23,8 @@ const SignIn = ({loadUser, refreshRoute, routes}) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    console.log(username);
+    console.log(password);
     try {
       // send username & password to backend & store in DB
       let response = await fetch(`${routes.signin}`, {
