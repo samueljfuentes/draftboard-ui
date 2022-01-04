@@ -21,7 +21,7 @@ const INITIAL_STATE = {
     draftboard: 'https://limitless-reaches-84398.herokuapp.com/draftboard',
     addPlayer: 'https://limitless-reaches-84398.herokuapp.com/addplayer',
     removePlayer: 'https://limitless-reaches-84398.herokuapp.com/removeplayer',
-    updateMyPlayers: 'https://limitless-reaches-84398.herokuapp.com/updatemyplayer' 
+    updateMyPlayers: 'https://limitless-reaches-84398.herokuapp.com/updatemyplayers' 
   })
 };
 
